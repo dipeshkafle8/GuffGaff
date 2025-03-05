@@ -1,4 +1,5 @@
 import { MessageCircleMore } from "lucide-react";
+import { Link } from "react-router-dom";
 const NavBar = () => {
   return (
     <>
@@ -8,10 +9,21 @@ const NavBar = () => {
             <MessageCircleMore size={35} color="#a854f7" />
             <span className="text-xl font-semibold">GuffGaff</span>
           </div>
-          <div className="text-white flex w-[15%] justify-between mr-20 font-semibold">
-            <span>Login</span>
-            <span>Features</span>
-            <span>About</span>
+          <div className="text-[#d6d2d2] flex w-[18%] justify-between mr-20 font-semibold">
+            <span className="cursor-pointer text-white">
+              <Link
+                to="/login"
+                className="px-6 py-2 rounded-md bg-[#0995a5] hover:bg-[#548a90]"
+              >
+                Login{" "}
+              </Link>
+            </span>
+            <span className="hover:text-white">
+              <Link to="/features">Features</Link>
+            </span>
+            <span className="hover:text-white">
+              <Link to="/about">About</Link>
+            </span>
           </div>
         </div>
       </div>
