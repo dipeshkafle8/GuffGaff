@@ -1,8 +1,8 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NavBar from "./Navbar/Navbar";
-import Footer from "./Footer/Footer";
-import LandingPage from "./LandingPage/LandingPage";
+import NavBar from "./Pages/Navbar/Navbar";
+import Footer from "./Pages/Footer/Footer";
+import LandingPage from "./Pages/LandingPage/LandingPage";
 function App() {
   return (
     <>

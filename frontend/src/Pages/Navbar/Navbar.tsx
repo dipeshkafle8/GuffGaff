@@ -5,10 +5,12 @@ const NavBar = () => {
     <>
       <div className="border-b-[1px] border-[#928f8fca] h-[4.5rem] flex items-center">
         <div className="flex justify-between w-full">
-          <div className="flex text-white w-[8rem] justify-evenly items-center ml-2">
-            <MessageCircleMore size={35} color="#a854f7" />
-            <span className="text-xl font-semibold">GuffGaff</span>
-          </div>
+          <Link to="/">
+            <div className="flex text-white w-[8rem] justify-evenly items-center ml-2">
+              <MessageCircleMore size={35} color="#a854f7" />
+              <span className="text-xl font-semibold">GuffGaff</span>
+            </div>
+          </Link>
           <div className="text-[#d6d2d2] flex w-[18%] justify-between mr-20 font-semibold">
             <span className="cursor-pointer text-white">
               <Link

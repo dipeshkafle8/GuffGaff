@@ -1,4 +1,6 @@
 import { MessagesSquare } from "lucide-react";
+import Features from "./Features";
+import { Link } from "react-router-dom";
 const LandingPage = () => {
   return (
     <>
@@ -12,11 +14,20 @@ const LandingPage = () => {
             A real-time chatting application <br /> that allows users to send
             and receive messages instantly.
           </span>
+          <span className="text-xl mt-4">
+            <Link
+              to="/chat"
+              className="px-8 bg-[rgb(163,64,239)] py-2 rounded-md hover:bg-[rgb(149,90,194)]"
+            >
+              Let's chat
+            </Link>
+          </span>
         </div>
         <div>
           <MessagesSquare size={200} />
         </div>
       </div>
+      <Features />
     </>
   );
 };
