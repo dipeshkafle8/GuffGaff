@@ -1,7 +1,10 @@
 const express = require("express");
-const app = express();
-require("dotenv").config();
+const { connectDB } = require("./config/db.config");
+require("dotenv").config(); //this will out env files data into process.env
 
+connectDB();
+
+const app = express();
 const port = process.env.PORT || 8001;
 
 app.listen(port, () => {
