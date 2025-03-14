@@ -60,6 +60,8 @@ const handleUserLogin = async (req, res) => {
     res.status(500).json({ status: false, msg: "Internal server error" });
   }
 };
+
+//handleUserLogout
 const handleUserLogout = () => {};
 
 module.exports = {
