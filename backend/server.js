@@ -1,6 +1,8 @@
 const express = require("express");
+const cookie = require("cookie-parser");
 const { connectDB } = require("./config/db.config");
 const { userRouter } = require("./routes/user.route");
+const { messageRoute } = require("./routes/message.route");
 require("dotenv").config(); //this will out env files data into process.env
 
 connectDB();
@@ -10,8 +12,10 @@ const port = process.env.PORT || 8001;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookie());
 
 app.use("/user", userRouter);
+app.use("/message", messageRoute);
 
 app.listen(port, () => {
   console.log(`Server running successfully at ${port}`);
