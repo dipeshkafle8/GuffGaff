@@ -10,6 +10,7 @@ const messageRoute = express.Router();
 
 messageRoute.get("/users", protectedRoute, getUsers);
 messageRoute.get("/getMessages/:id", protectedRoute, getMessages);
+messageRoute.post("/send/message/:id", protectedRoute, sendMessage);
 
 module.exports = {
   messageRoute,
