@@ -14,8 +14,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookie());
 
-app.use("/user", userRouter);
-app.use("/message", messageRoute);
+app.use("/api/user", userRouter);
+app.use("/api/message", messageRoute);
 
 app.listen(port, () => {
   console.log(`Server running successfully at ${port}`);
