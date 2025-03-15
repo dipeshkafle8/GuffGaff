@@ -1,64 +1,122 @@
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import SignUp from "./SignUp";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const Login = () => {
-  const handleOnSubmit = async () => {
-    console.log("Hello");
+interface LoginProps {
+  isLoginOpen: boolean | undefined;
+  handleLoginChange: () => void;
+}
+
+const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+
+  //to handle change in signup
+  const handleSignUpChange = () => {
+    setIsSignUpOpen((prev) => !prev);
+    handleLoginChange();
+  };
+
+  //to handle data on submit
+  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    let obj = {
+      email: formData.get("email") ?? "",
+      password: formData.get("password") ?? "",
+    };
+    console.log(obj);
+  };
+  //to provide guest credentials
+  const handleGuestCredentials = () => {
+    let emailInput = document.getElementById("email") as HTMLInputElement;
+    let passwordInput = document.getElementById("password") as HTMLInputElement;
+    if (emailInput && passwordInput) {
+      emailInput.value = "abc@gmail.com";
+      passwordInput.value = "1234";
+    }
   };
   return (
     <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="bg-[#0a4dd3] hover:cursor-pointer text-md w-24">
-            Log in
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-center text-2xl font-semibold">
-              Login
-            </DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleOnSubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email:
-                </Label>
-                <Input
-                  type="text"
-                  id="email"
-                  className="col-span-3"
-                  placeholder="Enter your email"
-                />
+      {!isSignUpOpen ? (
+        <Dialog open={isLoginOpen} onOpenChange={handleLoginChange}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle className="text-center text-2xl font-semibold">
+                Login
+              </DialogTitle>
+              <DialogDescription className="text-center">
+                Enter your email and password to access your account
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleOnSubmit}>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="email" className="text-right">
+                    Email:
+                  </Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="col-span-3"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="password" className="text-right">
+                    Password:
+                  </Label>
+                  <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="col-span-3"
+                    placeholder="Enter password"
+                    required
+                  />
+                </div>
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="password" className="text-right">
-                  Password:
-                </Label>
-                <Input
-                  type="password"
-                  id="password"
-                  className="col-span-3"
-                  placeholder="Enter password"
-                />
+              <div className=" flex flex-col gap-y-3 mt-8">
+                <div className="flex justify-evenly">
+                  <Button
+                    type="button"
+                    onClick={handleGuestCredentials}
+                    className="w-28 bg-[#605dff] cursor-pointer hover:bg-[#474679]"
+                  >
+                    Guest
+                  </Button>
+                  <Button type="submit" className="w-28 cursor-pointer">
+                    Login
+                  </Button>
+                </div>
+                <div className="text-center">
+                  <span
+                    className="underline text-[#323131] hover:text-black cursor-pointer"
+                    onClick={handleSignUpChange}
+                  >
+                    Don't have an account ?
+                  </span>
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Login</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+            </form>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <SignUp
+          isSignUpOpen={isSignUpOpen}
+          handleSignupChange={handleSignUpChange}
+        />
+      )}
     </>
   );
 };
