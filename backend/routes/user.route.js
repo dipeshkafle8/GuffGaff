@@ -4,6 +4,7 @@ const {
   handleUserLogin,
   handleUserRegister,
   handleUserLogout,
+  checkAuthentication,
 } = require("../controllers/user.controllers");
 
 const userRouter = express.Router();
@@ -14,5 +15,6 @@ userRouter.post("/logout", handleUserLogout);
 userRouter.post("/update", protectedRoute, (req, res) => {
   res.json({ msg: "Protected route is working" });
 });
+userRouter.get("/check", protectedRoute, checkAuthentication);
 
 module.exports = { userRouter };

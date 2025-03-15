@@ -20,6 +20,8 @@ const protectedRoute = async (req, res, next) => {
     //getting id of logged in user
     req.user = {
       id: user._id,
+      username: user.username,
+      email: user.email,
     };
 
     next();

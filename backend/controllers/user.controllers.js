@@ -55,7 +55,19 @@ const handleUserLogin = async (req, res) => {
 //handleUserLogout
 const handleUserLogout = () => {};
 
+//for checking authentication
+const checkAuthentication = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ status: true, msg: "User is authenticated", user: req.user });
+  } catch (err) {
+    res.status(500).json({ status: false, msg: "User not authorized" });
+  }
+};
+
 module.exports = {
+  checkAuthentication,
   handleUserLogin,
   handleUserRegister,
   handleUserLogout,
