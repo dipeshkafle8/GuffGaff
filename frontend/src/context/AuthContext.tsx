@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import { axiosWithCookie } from "@/lib/axios";
 import {
   createContext,
   ReactNode,
@@ -15,9 +15,9 @@ interface UserDetails {
 }
 
 //for what we are providing in context
-interface AuthContextType {
+export interface AuthContextType {
   user: UserDetails | null;
-  setUser: (user: UserDetails) => void;
+  setUser: (user: UserDetails | null) => void;
 }
 
 //for AuthProvider what it's recieving
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderType> = ({ children }) => {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const response = await axiosInstance.get("/user/check", {});
+        const response = await axiosWithCookie.get("/user/check", {});
         setUser(response.data.user);
       } catch (err) {
         console.log("Error in Authentication," + err);

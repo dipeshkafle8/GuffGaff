@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { axiosWithCookie } from "../../lib/axios";
 import SignUp from "./SignUp";
+import { useAuth, AuthContextType } from "@/context/AuthContext";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +18,29 @@ interface LoginProps {
   handleLoginChange: () => void;
 }
 
+interface LoginDetails {
+  email: string;
+  password: string;
+}
+
 const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
+  const { user, setUser }: AuthContextType = useAuth();
+
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+
+  //to send data to the backends
+  const sendUserDetailsToBackEnd = async (user: LoginDetails) => {
+    try {
+      let response = await axiosWithCookie.post("/user/login", user);
+      if (response.data.status) {
+        setUser(response.data.user);
+        console.log(user);
+      }
+    } catch (err) {
+      console.log("Error in logging", err);
+      setUser(null);
+    }
+  };
 
   //to handle change in signup
   const handleSignUpChange = () => {
@@ -29,11 +52,11 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    let obj = {
-      email: formData.get("email") ?? "",
-      password: formData.get("password") ?? "",
+    let obj: LoginDetails = {
+      email: (formData.get("email") as string) ?? "",
+      password: (formData.get("password") as string) ?? "",
     };
-    console.log(obj);
+    sendUserDetailsToBackEnd(obj);
   };
   //to provide guest credentials
   const handleGuestCredentials = () => {

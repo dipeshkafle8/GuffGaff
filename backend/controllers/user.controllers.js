@@ -39,12 +39,12 @@ const handleUserLogin = async (req, res) => {
         .json({ status: false, msg: "Password doesn't matched" });
     }
 
-    generateToken(userDetails._id, userDetails.username, res);
+    let token = generateToken(userDetails._id, userDetails.username, res);
 
     res.status(200).json({
       status: true,
       msg: "User logged in",
-      user: { username: userDetails.username, email },
+      user: { id: userDetails._id, username: userDetails.username, email },
     });
   } catch (err) {
     console.log(err);
@@ -53,7 +53,18 @@ const handleUserLogin = async (req, res) => {
 };
 
 //handleUserLogout
-const handleUserLogout = () => {};
+const handleUserLogout = async (req, res) => {
+  try {
+    //When a cookie is set with specific attributes (httpOnly, secure, sameSite), the same attributes must be used while clearing it.
+    res.clearCookie("jwt", {
+      httOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.status(200).json({ status: true, msg: "Logged Out Sucessfully" });
+  } catch (err) {
+    res.status(500).json({ status: false, msg: "Error while logging out" });
+  }
+};
 
 //for checking authentication
 const checkAuthentication = async (req, res) => {

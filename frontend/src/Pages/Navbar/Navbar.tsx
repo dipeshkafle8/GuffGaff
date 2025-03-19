@@ -3,11 +3,23 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import Login from "../Login/Login";
 import { Button } from "@/components/ui/button";
+import { useAuth, AuthContextType } from "@/context/AuthContext";
+import { axiosWithCookie } from "@/lib/axios";
 const NavBar = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const { user, setUser }: AuthContextType = useAuth();
 
+  // to change the dialog for login and signUp
   const handleLoginChange = () => {
     setIsLoginOpen((prev) => !prev);
+  };
+  const handleLogOut = async () => {
+    try {
+      let response = await axiosWithCookie.post("/user/logout");
+      setUser(null);
+    } catch (err) {
+      console.log("Error in logging out", err);
+    }
   };
   return (
     <>
@@ -20,12 +32,16 @@ const NavBar = () => {
             </div>
           </Link>
           <div className="text-[#d6d2d2] flex w-[22%] justify-between items-center mr-20 font-semibold">
-            <Button
-              className="bg-[#0a4dd3] hover:cursor-pointer text-md w-24"
-              onClick={handleLoginChange}
-            >
-              Log in
-            </Button>
+            {!user ? (
+              <Button
+                className=" hover:cursor-pointer text-md w-24"
+                onClick={handleLoginChange}
+              >
+                Log in
+              </Button>
+            ) : (
+              <Button onClick={handleLogOut}>Log Out</Button>
+            )}
 
             <span className="hover:text-white">
               <Link to="/features">Features</Link>
