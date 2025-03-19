@@ -32,7 +32,8 @@ const handleUserLogin = async (req, res) => {
         .status(404)
         .json({ status: false, msg: "User doesn't exists" });
     }
-    const isPassEqual = bcrypt.compare(password, userDetails.password);
+    const isPassEqual = await bcrypt.compare(password, userDetails.password);
+
     if (!isPassEqual) {
       return res
         .status(401)

@@ -8,12 +8,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { axiosWithCookie } from "@/lib/axios";
+import { toast } from "react-toastify";
 
+//props received by component
 interface SignUpProps {
   isSignUpOpen: boolean | undefined;
   handleSignupChange: () => void;
 }
 
+//Userdetails types
 interface UserDetails {
   username: String;
   email: String;
@@ -23,7 +27,34 @@ const SignUp: React.FC<SignUpProps> = ({
   isSignUpOpen,
   handleSignupChange,
 }) => {
-  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {};
+  const sendUserDetails = async (user: UserDetails) => {
+    try {
+      const res = await axiosWithCookie.post("/user/register", user);
+      if (res.data.status) {
+        toast.success("User Created!!", {
+          position: "top-right",
+          autoClose: 1000,
+        });
+        handleSignupChange();
+      }
+    } catch (err) {
+      toast.error("Error in user creation", {
+        position: "top-right",
+        autoClose: 1000,
+      });
+      console.log("Error while registering User", err);
+    }
+  };
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    let obj: UserDetails = {
+      username: (formData.get("username") as string) ?? "",
+      email: (formData.get("email") as string) ?? "",
+      password: (formData.get("password") as string) ?? "",
+    };
+    sendUserDetails(obj);
+  };
   return (
     <>
       <Dialog open={isSignUpOpen} onOpenChange={handleSignupChange}>

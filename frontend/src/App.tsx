@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-
+import { ToastContainer, toast } from "react-toastify";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import BeforeLogin from "./layout/BeforeLogin";
 import AfterLogin from "./layout/AfterLogin";
@@ -19,6 +19,7 @@ function App() {
             </Route>
           </Routes>
         </div>
+        <ToastContainer position="top-right" autoClose={3000} />
       </BrowserRouter>
     </>
   );

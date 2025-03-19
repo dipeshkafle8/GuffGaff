@@ -4,6 +4,7 @@ import { axiosWithCookie } from "../../lib/axios";
 import SignUp from "./SignUp";
 import { useAuth, AuthContextType } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Dialog,
   DialogContent,
@@ -36,9 +37,17 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
       let response = await axiosWithCookie.post("/user/login", user);
       if (response.data.status) {
         setUser(response.data.user);
+        toast.success("Successfully Logged!", {
+          position: "top-right",
+          autoClose: 1000,
+        });
         navigate("/chat");
       }
     } catch (err) {
+      toast.error("Error!! in logging", {
+        position: "top-right",
+        autoClose: 1000,
+      });
       console.log("Error in logging", err);
       setUser(null);
     }
