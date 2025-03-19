@@ -1,5 +1,11 @@
+import ChatInterface from "./Chatinterface";
+
 const ChatDashBoard = () => {
-  return <>Hello this is chatApp</>;
+  return (
+    <>
+      <ChatInterface />
+    </>
+  );
 };
 
 export default ChatDashBoard;

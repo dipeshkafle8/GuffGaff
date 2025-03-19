@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import BeforeLogin from "./layout/BeforeLogin";
 import AfterLogin from "./layout/AfterLogin";
-import ChatDashBoard from "./Pages/ChatDashBoard/ChatDashBoard";
+import ChatDashBoard from "./Pages/ChatDashBoard/Chatdashboard";
 function App() {
   return (
     <>

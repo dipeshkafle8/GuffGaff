@@ -13,11 +13,17 @@ interface SignUpProps {
   isSignUpOpen: boolean | undefined;
   handleSignupChange: () => void;
 }
+
+interface UserDetails {
+  username: String;
+  email: String;
+  password: String;
+}
 const SignUp: React.FC<SignUpProps> = ({
   isSignUpOpen,
   handleSignupChange,
 }) => {
-  const handleOnSubmit = () => {};
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {};
   return (
     <>
       <Dialog open={isSignUpOpen} onOpenChange={handleSignupChange}>
