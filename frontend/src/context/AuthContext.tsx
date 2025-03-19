@@ -32,10 +32,10 @@ export const AuthProvider: React.FC<AuthProviderType> = ({ children }) => {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const response = await axiosInstance.get("/check");
+        const response = await axiosInstance.get("/user/check", {});
         setUser(response.data.user);
       } catch (err) {
-        console.log(err);
+        console.log("Error in Authentication," + err);
         setUser(null);
       } finally {
         setIsLoading(false);
