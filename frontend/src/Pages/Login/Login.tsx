@@ -3,6 +3,7 @@ import { useState } from "react";
 import { axiosWithCookie } from "../../lib/axios";
 import SignUp from "./SignUp";
 import { useAuth, AuthContextType } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +28,7 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
   const { user, setUser }: AuthContextType = useAuth();
 
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const navigate = useNavigate();
 
   //to send data to the backends
   const sendUserDetailsToBackEnd = async (user: LoginDetails) => {
@@ -34,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
       let response = await axiosWithCookie.post("/user/login", user);
       if (response.data.status) {
         setUser(response.data.user);
-        console.log(user);
+        navigate("/chat");
       }
     } catch (err) {
       console.log("Error in logging", err);
