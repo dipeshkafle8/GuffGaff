@@ -44,7 +44,7 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
           autoClose: 800,
         });
         //after successfully loggin create a socket connection
-        let socket = connectSocket();
+        connectSocket();
         navigate("/chat");
       }
     } catch (err) {

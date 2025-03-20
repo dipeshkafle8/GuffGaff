@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { connectSocket } from "@/socket/socketClient";
 
 //for user that will be storing in use state
 interface UserDetails {
@@ -32,7 +33,9 @@ export const AuthProvider: React.FC<AuthProviderType> = ({ children }) => {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const response = await axiosWithCookie.get("/user/check", {});
+        const response = await axiosWithCookie.get("/user/check");
+        //if within session establish socket connection
+        connectSocket();
         setUser(response.data.user);
       } catch (err) {
         console.log("Error in Authentication," + err);
