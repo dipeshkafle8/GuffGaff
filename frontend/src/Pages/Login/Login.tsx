@@ -35,6 +35,7 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
   const sendUserDetailsToBackEnd = async (user: LoginDetails) => {
     try {
       let response = await axiosWithCookie.post("/user/login", user);
+
       if (response.data.status) {
         setUser(response.data.user);
         toast.success("Successfully Logged!", {

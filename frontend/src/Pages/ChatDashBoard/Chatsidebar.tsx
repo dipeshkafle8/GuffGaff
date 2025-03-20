@@ -13,8 +13,34 @@ import {
 } from "lucide-react";
 import UserList from "./Userlist";
 import GroupList from "./Grouplist";
+import { axiosWithCookie } from "@/lib/axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { AuthContextType, useAuth } from "@/context/AuthContext";
 const ChatSidebar = () => {
   const [showProfile, setShowProfile] = useState(false);
+  const { user, setUser }: AuthContextType = useAuth();
+  const navigate = useNavigate();
+
+  //for handling logout
+  const handleLogOut = async () => {
+    try {
+      const res = await axiosWithCookie.post("/user/logout");
+      if (res.data.status) {
+        toast.success("Successfully Logged Out!!", {
+          position: "top-right",
+          autoClose: 500,
+        });
+        setUser(null);
+        navigate("/");
+      }
+    } catch (err) {
+      toast.error("Error in logging out", {
+        position: "top-right",
+        autoClose: 1000,
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -83,21 +109,12 @@ const ChatSidebar = () => {
               <User className="h-4 w-4 mr-2" />
               My Profile
             </Button>
+
             <Button
-              variant="ghost"
-              className="w-full justify-start text-white hover:bg-gray-800/50"
+              variant="destructive"
+              className="w-full justify-start mt-2 hover:cursor-pointer"
+              onClick={handleLogOut}
             >
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-white hover:bg-gray-800/50"
-            >
-              <Bell className="h-4 w-4 mr-2" />
-              Notifications
-            </Button>
-            <Button variant="destructive" className="w-full justify-start mt-2">
               <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>
