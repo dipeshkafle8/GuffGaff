@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { connectSocket } from "@/socket/socketClient";
 import { axiosWithCookie } from "../../lib/axios";
 import SignUp from "./SignUp";
 import { useAuth, AuthContextType } from "@/context/AuthContext";
@@ -40,14 +41,16 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
         setUser(response.data.user);
         toast.success("Successfully Logged!", {
           position: "top-right",
-          autoClose: 1000,
+          autoClose: 800,
         });
+        //after successfully loggin create a socket connection
+        let socket = connectSocket();
         navigate("/chat");
       }
     } catch (err) {
       toast.error("Error!! in logging", {
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 800,
       });
       console.log("Error in logging", err);
       setUser(null);

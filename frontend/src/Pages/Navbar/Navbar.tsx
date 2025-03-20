@@ -5,6 +5,7 @@ import Login from "../Login/Login";
 import { Button } from "@/components/ui/button";
 import { useAuth, AuthContextType } from "@/context/AuthContext";
 import { axiosWithCookie } from "@/lib/axios";
+import { toast } from "react-toastify";
 const NavBar = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const { user, setUser }: AuthContextType = useAuth();
@@ -17,7 +18,15 @@ const NavBar = () => {
     try {
       let response = await axiosWithCookie.post("/user/logout");
       setUser(null);
+      toast.success("Sucessfully logged out", {
+        position: "top-center",
+        autoClose: 800,
+      });
     } catch (err) {
+      toast.error("Error in logging out", {
+        position: "top-center",
+        autoClose: 800,
+      });
       console.log("Error in logging out", err);
     }
   };

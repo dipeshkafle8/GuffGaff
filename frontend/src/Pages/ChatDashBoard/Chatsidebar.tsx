@@ -77,18 +77,18 @@ const ChatSidebar = () => {
         <div className="p-3">
           <Button
             variant="ghost"
-            className="w-full flex justify-between items-center text-white hover:bg-gray-800/50"
+            className="w-full flex justify-between items-center text-white hover:cursor-pointer hover:bg-white "
             onClick={() => setShowProfile(!showProfile)}
           >
             <div className="flex items-center">
               <Avatar className="h-8 w-8 mr-2">
-                <div className="bg-violet-600 text-white flex h-full w-full items-center justify-center text-sm font-medium">
+                <div className="bg-violet-600  text-white flex h-full w-full items-center justify-center text-sm font-medium">
                   ME
                 </div>
               </Avatar>
-              <div className="text-left">
+              <div className="text-left ">
                 <p className="font-medium">Morgan Evans</p>
-                <p className="text-xs text-gray-400">morgan@example.com</p>
+                <p className="text-xs">morgan@example.com</p>
               </div>
             </div>
             {showProfile ? (
@@ -104,7 +104,7 @@ const ChatSidebar = () => {
           <div className="px-3 pb-3 space-y-1">
             <Button
               variant="ghost"
-              className="w-full justify-start text-white hover:bg-gray-800/50"
+              className="w-full justify-start text-white hover:cursor-pointer"
             >
               <User className="h-4 w-4 mr-2" />
               My Profile

@@ -1,7 +1,6 @@
 const express = require("express");
 const cookie = require("cookie-parser");
 const http = require("http");
-const { Server } = require("socket.io");
 const cors = require("cors");
 const { connectDB } = require("./config/db.config");
 const { userRouter } = require("./routes/user.route");
@@ -24,11 +23,11 @@ app.use(
     credentials: true,
   })
 );
+const server = http.createServer(app);
+setupSocket(server);
 
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRoute);
-const server = http.createServer(app);
-setupSocket(server);
 
 server.listen(port, () => {
   console.log(`Server running successfully at ${port}`);

@@ -154,7 +154,7 @@ export default function ChatInterface() {
             placeholder="Type a message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className="flex-1"
+            className="flex-1 text-white md:text-lg"
           />
           <Button type="submit" size="icon">
             <Send className="h-5 w-5" />

@@ -33,14 +33,14 @@ const SignUp: React.FC<SignUpProps> = ({
       if (res.data.status) {
         toast.success("User Created!!", {
           position: "top-right",
-          autoClose: 1000,
+          autoClose: 800,
         });
         handleSignupChange();
       }
     } catch (err) {
       toast.error("Error in user creation", {
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 800,
       });
       console.log("Error while registering User", err);
     }

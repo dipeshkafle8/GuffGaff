@@ -20,7 +20,7 @@ const setupSocket = (server) => {
     });
   });
 
-  return io;
+  // return io;
 };
 
 module.exports = { setupSocket };
