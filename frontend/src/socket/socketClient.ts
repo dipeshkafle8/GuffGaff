@@ -14,4 +14,12 @@ export const connectSocket = () => {
   return socket;
 };
 
+export const disconnectSocket = () => {
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+    console.log("Disconnected from socket");
+  }
+};
+
 export const getSocket = (): Socket | null => socket;

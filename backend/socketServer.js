@@ -1,5 +1,8 @@
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
+const cookie = require("cookie");
+
+//setting up an
 const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
@@ -18,7 +21,9 @@ const setupSocket = (server) => {
       if (!cookieHeader) {
         return next(new Error("Authentication error:No cookies found"));
       }
-      const token = cookieHeader.split("=")[1];
+      //parsing the cookie and getting the token
+      const parsedCookie = cookie.parse(cookieHeader);
+      const token = parsedCookie.jwt;
 
       const user = jwt.verify(token, process.env.JWT_SECRET);
       //adding the user details which is sender details to the socket
@@ -30,7 +35,8 @@ const setupSocket = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("A user connected", socket.user);
+    console.log("A user connected");
+
     socket.on("disconnect", () => {
       console.log("User disconnected");
     });

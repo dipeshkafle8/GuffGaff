@@ -2,67 +2,51 @@ import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { axiosWithCookie } from "@/lib/axios";
+import { toast } from "react-toastify";
+import { RingLoader } from "react-spinners";
+import { UserDetails } from "./Chatinterface";
 
-const USERS = [
-  {
-    id: 1,
-    name: "Alex Johnson",
-    status: "online",
-    lastSeen: null,
-    avatar: "AJ",
-    unreadCount: 2,
-  },
-  {
-    id: 2,
-    name: "Sarah Williams",
-    status: "online",
-    lastSeen: null,
-    avatar: "SW",
-    unreadCount: 0,
-  },
-  {
-    id: 3,
-    name: "Michael Brown",
-    status: "offline",
-    lastSeen: "2h ago",
-    avatar: "MB",
-    unreadCount: 0,
-  },
-  {
-    id: 4,
-    name: "Emily Davis",
-    status: "online",
-    lastSeen: null,
-    avatar: "ED",
-    unreadCount: 5,
-  },
-  {
-    id: 5,
-    name: "David Wilson",
-    status: "offline",
-    lastSeen: "1d ago",
-    avatar: "DW",
-    unreadCount: 0,
-  },
-  {
-    id: 6,
-    name: "Jessica Taylor",
-    status: "offline",
-    lastSeen: "3h ago",
-    avatar: "JT",
-    unreadCount: 0,
-  },
-  {
-    id: 7,
-    name: "Ryan Martinez",
-    status: "online",
-    lastSeen: null,
-    avatar: "RM",
-    unreadCount: 1,
-  },
-];
+interface UserListProps {
+  setSelectedUser: (user: UserDetails | null) => void;
+}
 
-export default function UserList() {
+export default function UserList({ setSelectedUser }: UserListProps) {
+  //to store all the registered users
+  const [Users, setUsers] = useState<UserDetails[]>([]);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axiosWithCookie.get("/message/users");
+        console.log(response.data.allUsers);
+        setUsers(response.data.allUsers);
+      } catch (err) {
+        console.log("Error in getting Users", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  //to handle clicking on a specific user
+  const handleOnClickOnUser = (user: UserDetails) => {
+    setSelectedUser(user);
+  };
+
+  //if currenlty fetching user details
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[80%]">
+        <RingLoader color="white" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-1 flex-col">
       <div className="relative p-3">
@@ -75,34 +59,30 @@ export default function UserList() {
 
       <ScrollArea className="flex-1">
         <div className="space-y-1 p-2">
-          {USERS.map((user) => (
+          {Users.map((user, ind) => (
             <div
-              key={user.id}
+              key={ind}
               className="flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-gray-800/50 text-white"
+              onClick={() => handleOnClickOnUser(user)}
             >
               <Avatar className="h-10 w-10">
                 <div
                   className={`flex h-full w-full items-center justify-center text-sm font-medium ${
-                    user.status === "online"
+                    user.isOnline === true
                       ? "bg-primary text-primary-foreground"
                       : "bg-gray-700 text-gray-200"
                   }`}
                 >
-                  {user.avatar}
+                  {user.username.split("")[0].toUpperCase()}
                 </div>
               </Avatar>
 
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-medium">{user.name}</h4>
-                  {user.unreadCount > 0 && (
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                      {user.unreadCount}
-                    </span>
-                  )}
+                  <h4 className="font-medium">{user.username}</h4>
                 </div>
                 <p className="text-xs text-gray-400">
-                  {user.status === "online" ? "Online" : user.lastSeen}
+                  {user.isOnline === true ? "Online" : "Offline"}
                 </p>
               </div>
             </div>

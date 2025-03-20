@@ -6,6 +6,8 @@ const messageSchema = new mongoose.Schema({
   chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
   messageType: { type: String, default: "text" },
   content: { type: String, required: true },
+  isDelivered: { type: Boolean, default: false },
+
   readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 

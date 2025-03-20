@@ -17,7 +17,11 @@ import { axiosWithCookie } from "@/lib/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
-const ChatSidebar = () => {
+import { UserDetails } from "./Chatinterface";
+interface ChatSideBarProps {
+  setSelectedUser: (user: UserDetails | null) => void;
+}
+const ChatSidebar: React.FC<ChatSideBarProps> = ({ setSelectedUser }) => {
   const [showProfile, setShowProfile] = useState(false);
   const { user, setUser }: AuthContextType = useAuth();
   const navigate = useNavigate();
@@ -64,7 +68,7 @@ const ChatSidebar = () => {
         </TabsList>
 
         <TabsContent value="contacts" className="flex-1 mt-0">
-          <UserList />
+          <UserList setSelectedUser={setSelectedUser} />
         </TabsContent>
 
         <TabsContent value="groups" className="flex-1 mt-0">
@@ -87,8 +91,8 @@ const ChatSidebar = () => {
                 </div>
               </Avatar>
               <div className="text-left ">
-                <p className="font-medium">Morgan Evans</p>
-                <p className="text-xs">morgan@example.com</p>
+                <p className="font-medium">{user?.username}</p>
+                <p className="text-xs">{user?.email}</p>
               </div>
             </div>
             {showProfile ? (

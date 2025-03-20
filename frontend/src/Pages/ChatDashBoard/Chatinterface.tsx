@@ -10,50 +10,34 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import ChatMessage from "./Chatmessage";
 import ChatSidebar from "./Chatsidebar";
+import { axiosWithCookie } from "@/lib/axios";
 
-const SAMPLE_MESSAGES = [
-  {
-    id: 1,
-    content: "Hey there! How's it going?",
-    sender: "other",
-    senderName: "Alex Johnson",
-    timestamp: new Date(Date.now() - 3600000 * 2),
-  },
-  {
-    id: 2,
-    content:
-      "I'm doing well, thanks for asking! Just finished that project we were working on.",
-    sender: "me",
-    timestamp: new Date(Date.now() - 3600000 * 1.5),
-  },
-  {
-    id: 3,
-    content:
-      "That's great to hear! Can you send me the files when you get a chance?",
-    sender: "other",
-    senderName: "Alex Johnson",
-    timestamp: new Date(Date.now() - 3600000 * 1),
-  },
-  {
-    id: 4,
-    content: "Sure thing! I'll email them to you right away.",
-    sender: "me",
-    timestamp: new Date(Date.now() - 3600000 * 0.5),
-  },
-  {
-    id: 5,
-    content:
-      "Perfect, thank you! By the way, are you free for a quick call tomorrow to discuss the next steps?",
-    sender: "other",
-    senderName: "Alex Johnson",
-    timestamp: new Date(Date.now() - 60000 * 10),
-  },
-];
+export interface UserDetails {
+  _id: String;
+  username: String;
+  email: String;
+  profilePic: String;
+  isOnline: Boolean;
+}
+
+interface IMessage {
+  _id: string;
+  senderId: string;
+  receiverId: string;
+  chat: string;
+  messageType: string;
+  content: string;
+  isDelivered: boolean;
+  readBy: string[];
+  timestamp: Date;
+}
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState(SAMPLE_MESSAGES);
+  const [messages, setMessages] = useState<IMessage | []>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -61,6 +45,23 @@ export default function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // whenever user clicks on the user on sidebar fetch messages between me an him
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await axiosWithCookie.get(
+          `message/getMessages/${selectedUser?._id}`
+        );
+        setMessages(res.data.messages);
+      } catch (err) {
+        console.log("Error in fetching messages", err);
+      }
+    };
+    if (selectedUser) {
+      fetchMessages();
+    }
+  }, [selectedUser]);
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
@@ -99,7 +100,7 @@ export default function ChatInterface() {
             </Button>
           )}
         </div>
-        <ChatSidebar />
+        <ChatSidebar setSelectedUser={setSelectedUser} />
       </div>
 
       {/* Main chat area */}
