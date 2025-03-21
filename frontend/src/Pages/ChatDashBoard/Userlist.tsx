@@ -52,7 +52,7 @@ export default function UserList({ setSelectedUser }: UserListProps) {
       <div className="relative p-3">
         <Search className="absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <Input
-          placeholder="Search contacts..."
+          placeholder="Search user"
           className="pl-9 bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500"
         />
       </div>

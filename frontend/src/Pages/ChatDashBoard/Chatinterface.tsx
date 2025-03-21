@@ -33,7 +33,7 @@ interface IMessage {
 }
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState<IMessage | []>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null);
@@ -69,19 +69,12 @@ export default function ChatInterface() {
   };
 
   // Handle sending a new message
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (newMessage.trim() === "") return;
+    const formData = new FormData(e.currentTarget);
+    const message: string = (formData.get("message") as string) ?? "";
 
-    const newMsg = {
-      id: messages.length + 1,
-      content: newMessage,
-      sender: "me",
-      timestamp: new Date(),
-    };
-
-    setMessages([...messages, newMsg]);
-    setNewMessage("");
+    e.currentTarget.reset();
   };
 
   return (
@@ -102,66 +95,70 @@ export default function ChatInterface() {
         </div>
         <ChatSidebar setSelectedUser={setSelectedUser} />
       </div>
+      {selectedUser ? (
+        <div className="flex flex-1 flex-col">
+          {/* Chat header */}
 
-      {/* Main chat area */}
-      <div className="flex flex-1 flex-col">
-        {/* Chat header */}
-        <div className="flex h-16 items-center justify-between border-b border-gray-700 px-4 text-white">
-          <div className="flex items-center gap-3">
-            {!isDesktop && (
-              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-                <Menu className="h-5 w-5" />
-              </Button>
-            )}
-            <Avatar className="h-8 w-8">
-              <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-                AJ
+          <div className="flex h-16 items-center justify-between border-b border-gray-700 px-4 text-white">
+            <div className="flex items-center gap-3">
+              {!isDesktop && (
+                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                  <Menu className="h-5 w-5" />
+                </Button>
+              )}
+              <Avatar className="h-8 w-8">
+                <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
+                  AJ
+                </div>
+              </Avatar>
+              <div>
+                <h3 className="font-medium">Alex Johnson</h3>
+                <p className="text-xs text-muted-foreground">Online</p>
               </div>
-            </Avatar>
-            <div>
-              <h3 className="font-medium">Alex Johnson</h3>
-              <p className="text-xs text-muted-foreground">Online</p>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon">
+                <Phone className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Video className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-5 w-5" />
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon">
-              <Phone className="h-5 w-5" />
+
+          {/* Messages area */}
+          <ScrollArea className="flex-1 p-4">
+            <div className="flex flex-col gap-4">
+              {messages.map((message) => (
+                <ChatMessage key={message.id} message={message} />
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+
+          {/* Message input */}
+          <form
+            onSubmit={handleSendMessage}
+            className="flex items-center gap-2 border-t border-gray-700 bg-gray-900/30 p-4"
+          >
+            <Input
+              placeholder="Type a message..."
+              name="message"
+              className="flex-1 text-white md:text-lg"
+            />
+            <Button type="submit" size="icon">
+              <Send className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <Video className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <MoreVertical className="h-5 w-5" />
-            </Button>
-          </div>
+          </form>
         </div>
-
-        {/* Messages area */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="flex flex-col gap-4">
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
-
-        {/* Message input */}
-        <form
-          onSubmit={handleSendMessage}
-          className="flex items-center gap-2 border-t border-gray-700 bg-gray-900/30 p-4"
-        >
-          <Input
-            placeholder="Type a message..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className="flex-1 text-white md:text-lg"
-          />
-          <Button type="submit" size="icon">
-            <Send className="h-5 w-5" />
-          </Button>
-        </form>
-      </div>
+      ) : (
+        <div className="flex justify-center items-center h-[100%] text-white text-lg  w-[100%]">
+          <span>No messages</span>
+        </div>
+      )}
     </div>
   );
 }

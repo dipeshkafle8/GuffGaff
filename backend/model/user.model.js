@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: "",
+      default:
+        "https://w0.peakpx.com/wallpaper/335/429/HD-wallpaper-salman-khan-tiger.jpg",
     },
     isOnline: {
       type: Boolean,
