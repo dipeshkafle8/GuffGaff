@@ -37,17 +37,6 @@ const getMessages = async (req, res) => {
   }
 };
 
-const sendMessage = async (req, res) => {
-  try {
-    const myId = req.user.id;
-    const receiverId = req.params.id;
-    const { text } = req.body;
-  } catch (err) {
-    console.log("Error in sending Message", err);
-    res.status(500).json({ status: false, msg: "Error in sending Messages" });
-  }
-};
-
 module.exports = {
   getUsers,
   getMessages,
