@@ -3,13 +3,14 @@ const { Chat } = require("../model/chat.model");
 const accessChat = async (req, res) => {
   try {
     const { userId } = req.body;
+    let myId = req.user.id;
     if (!userId) {
       return res.status(400).json({ status: false, msg: "userId not present" });
     }
 
     let existingChat = await Chat.findOne({
       isGroupChat: false,
-      users: { $all: [req.user._id, userId] },
+      users: { $all: [myId, userId] },
     })
       .populate("users", "-password")
       .populate({
@@ -26,7 +27,7 @@ const accessChat = async (req, res) => {
     const chatData = {
       chatName: "sender",
       isGroupChat: false,
-      users: [req.user._id, userId],
+      users: [myId, userId],
     };
     const newChat = await Chat.create(chatData);
 
@@ -44,11 +45,12 @@ const accessChat = async (req, res) => {
   }
 };
 
-const fetchChatsForUser = async (req, res) => {
+//to fetch chat of one to one user
+const fetchSingleChatsForUser = async (req, res) => {
   try {
-    let chats = await Chat.find({ users: req.user._id })
+    let myId = req.user.id;
+    let chats = await Chat.find({ users: myId, isGroupChat: false })
       .populate("users", "-password")
-      .populate("groupAdmin", "-password")
       .populate({
         path: "latestMessage",
         populate: { path: "sender", select: "name pic email" },
@@ -61,6 +63,29 @@ const fetchChatsForUser = async (req, res) => {
     res
       .status(500)
       .json({ status: false, msg: "Error in fetching chats of users" });
+  }
+};
+
+//for fetching chats of group users
+
+const fetchGroupChatsForUser = async (req, res) => {
+  try {
+    let myId = req.user.id;
+    let chats = await Chat.find({ users: myId, isGroupChat: true })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password")
+      .populate({
+        path: "latestMessage",
+        populate: { path: "sender", select: "name email pic" },
+      })
+      .sort({ updatedAt: -1 });
+
+    res.status(200).json({ status: true, msg: "Sucessfully fetched", chats });
+  } catch (err) {
+    console.log("Error in fetching group details", err);
+    res
+      .status(500)
+      .json({ status: false, msg: "Error in fetching group details" });
   }
 };
 
@@ -98,4 +123,9 @@ const createGroup = async (req, res) => {
   }
 };
 
-module.exports = { accessChat, fetchChatsForUser, createGroup };
+module.exports = {
+  accessChat,
+  fetchSingleChatsForUser,
+  createGroup,
+  fetchGroupChatsForUser,
+};

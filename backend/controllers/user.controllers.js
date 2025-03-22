@@ -78,9 +78,25 @@ const checkAuthentication = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const myId = req.user.id;
+
+    let users = await User.find({ _id: { $ne: myId } });
+
+    res
+      .status(200)
+      .json({ status: true, msg: "All users fetched", Users: users });
+  } catch (err) {
+    console.log("Error in getting users", err);
+    res.status(500).json({ status: false, msg: "Error in getting all users" });
+  }
+};
+
 module.exports = {
   checkAuthentication,
   handleUserLogin,
   handleUserRegister,
   handleUserLogout,
+  getAllUsers,
 };

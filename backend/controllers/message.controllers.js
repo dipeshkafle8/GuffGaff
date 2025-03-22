@@ -2,35 +2,6 @@ const { Chat } = require("../model/chat.model");
 const { Message } = require("../model/message.model");
 const { User } = require("../model/user.model");
 
-const getUsers = async (req, res) => {
-  try {
-    let myId = req.user.id;
-
-    //find the chats in which I have contributed and not a group chat
-    const chats = await Chat.find({
-      isGroupChat: false,
-      users: { $in: [myId] },
-    });
-
-    //extract user Ids fro these chats
-    const userIds = chats
-      .flatMap((chat) => chat.users)
-      .filter((userId) => userId.toString() !== myId);
-
-    //fethch the user details for these user Ids
-    const allUsers = await User.find({ _id: { $in: userIds } }).select(
-      "-password"
-    );
-
-    res
-      .status(200)
-      .json({ status: true, msg: "Successfully fetched", Users: allUsers });
-  } catch (err) {
-    console.log("Error in message Controllers", err);
-    res.status(500).json({ status: false, msg: "Internal Server Error" });
-  }
-};
-
 //get all the messages for paritcular chat
 const getMessages = async (req, res) => {
   try {
@@ -56,7 +27,7 @@ const sendMessage = async (req, res) => {
     }
 
     let newMessage = {
-      sender: req.user._id,
+      sender: req.user.id,
       content: content,
       chat: chatId,
     };
@@ -80,7 +51,6 @@ const sendMessage = async (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   getMessages,
   sendMessage,
 };

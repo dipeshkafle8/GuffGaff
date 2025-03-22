@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    profilePic: {
+    pic: {
       type: String,
       default:
         "https://w0.peakpx.com/wallpaper/335/429/HD-wallpaper-salman-khan-tiger.jpg",
