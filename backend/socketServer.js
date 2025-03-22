@@ -37,13 +37,31 @@ const setupSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("A user connected", socket.id);
 
-    socket.on("disconnect", () => {
-      console.log("User disconnected");
+    socket.on("setup", (user) => {
+      socket.join(user.id);
+      socket.emit("connected");
     });
 
-    socket.on("message", (data) => {
-      console.log("Message received:", data);
-      io.emit("message", data);
+    socket.on("join room", (chatId) => {
+      socket.join(chatId);
+      console.log("User joined", chatId);
+    });
+
+    socket.on("send message", (newReceivedMessage) => {
+      let chat = newReceivedMessage.chat;
+
+      if (!chat.users) return console.log("No users are there");
+
+      chat.users.forEach((user) => {
+        //do not send back to the user who send it
+        if (user._id === newReceivedMessage.sender._id) return;
+
+        socket.in(user._id).emit("message received", newReceivedMessage);
+      });
+    });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected");
     });
   });
 

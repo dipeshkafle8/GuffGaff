@@ -13,6 +13,7 @@ import ChatSidebar from "./Chatsidebar";
 import { axiosWithCookie } from "@/lib/axios";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
+import { getSocket } from "@/socket/socketClient";
 
 export interface UserDetails {
   _id: String;
@@ -46,13 +47,28 @@ export default function ChatInterface() {
   const [selectedChat, setSelectedChat] = useState<ChatDetails | null>(null);
   const [isMessagesLoading, setIsMessagesLoading] = useState<Boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  console.log(messages);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  let socket = getSocket();
+
   // Scroll to bottom of messages when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (user) socket?.emit("setup", user);
+  }, []);
+
+  useEffect(() => {
+    socket?.on("message received", (newMessageReceived) => {
+      if (!selectedChat || selectedChat._id != newMessageReceived.chat._id) {
+        //logic for notification
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
 
   // whenever user clicks on the user on sidebar fetch messages between me an him
   useEffect(() => {
@@ -62,7 +78,9 @@ export default function ChatInterface() {
         const res = await axiosWithCookie.get(
           `message/getMessages/${selectedChat?._id}`
         );
+
         setMessages(res.data.messages);
+        socket?.emit("join room", selectedChat?._id);
       } catch (err) {
         console.log("Error in fetching messages", err);
       } finally {
@@ -113,6 +131,7 @@ export default function ChatInterface() {
         content: message,
       };
       const res = await axiosWithCookie.post("/message/sendMessage", data);
+      socket?.emit("send message", res.data.message);
       setMessages([...messages, res.data.message]);
     } catch (err) {
       console.log("Error in sending message");
@@ -180,7 +199,7 @@ export default function ChatInterface() {
           </div>
 
           {/* Messages area */}
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 p-4 overflow-y-auto max-h-[90%]">
             <div className="flex flex-col gap-4">
               {messages.map((message) => (
                 <ChatMessage key={message._id} message={message} />
