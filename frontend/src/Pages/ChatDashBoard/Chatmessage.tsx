@@ -1,27 +1,23 @@
 import { format } from "date-fns";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-
-interface Message {
-  id: number;
-  content: string;
-  sender: string;
-  senderName?: string;
-  timestamp: Date;
-}
+import { AuthContextType, useAuth } from "@/context/AuthContext";
+import { UserDetails } from "./Chatinterface";
+import { Message } from "./Chatinterface";
 interface ChatMessageProps {
   message: Message;
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
-  const isMe = message.sender === "me";
+  const { user, setUser }: AuthContextType = useAuth();
+  const isMe = message.sender._id === user?.id;
 
   return (
     <div className={cn("flex gap-2", isMe ? "flex-row-reverse" : "flex-row")}>
       {!isMe && (
         <Avatar className="h-8 w-8 mt-1">
           <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-            {message.senderName
+            {message.sender.username
               ?.split(" ")
               .map((name) => name[0])
               .join("") || "U"}

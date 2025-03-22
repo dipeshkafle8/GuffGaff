@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ChatMessage from "./Chatmessage";
 import ChatSidebar from "./Chatsidebar";
 import { axiosWithCookie } from "@/lib/axios";
+import { AuthContextType, useAuth } from "@/context/AuthContext";
 
 export interface UserDetails {
   _id: String;
@@ -20,24 +21,27 @@ export interface UserDetails {
   isOnline: Boolean;
 }
 
-interface IMessage {
-  _id: string;
-  senderId: string;
-  receiverId: string;
-  chat: string;
-  messageType: string;
+interface Message {
+  _id: number;
   content: string;
-  isDelivered: boolean;
-  readBy: string[];
+  sender: UserDetails;
+  timestamp: Date;
+}
+export interface ChatDetails {
+  _id: String;
+  chatName: String;
+  isGroupChat: Boolean;
+  users: UserDetails[];
   timestamp: Date;
 }
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const { user, setUser }: AuthContextType = useAuth();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null);
-
+  const [selectedChat, setSelectedChat] = useState<ChatDetails | null>(null);
+  const [isMessagesLoading, setIsMessagesLoading] = useState<Boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -49,23 +53,41 @@ export default function ChatInterface() {
   // whenever user clicks on the user on sidebar fetch messages between me an him
   useEffect(() => {
     const fetchMessages = async () => {
+      setIsMessagesLoading(true);
       try {
         const res = await axiosWithCookie.get(
-          `message/getMessages/${selectedUser?._id}`
+          `message/getMessages/${selectedChat?._id}`
         );
         setMessages(res.data.messages);
       } catch (err) {
         console.log("Error in fetching messages", err);
+      } finally {
+        setIsMessagesLoading(false);
       }
     };
-    if (selectedUser) {
+    if (selectedChat) {
       fetchMessages();
     }
-  }, [selectedUser]);
+  }, [selectedChat]);
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
+  };
+
+  const getUsername = () => {
+    let secondUser = selectedChat?.users.filter((u) => u._id != user?.id);
+
+    if (secondUser) {
+      return secondUser[0].username;
+    }
+
+    return "No User";
+  };
+
+  const getFirstLetter = () => {
+    let username = getUsername();
+    return username.split("")[0];
   };
 
   // Handle sending a new message
@@ -93,9 +115,9 @@ export default function ChatInterface() {
             </Button>
           )}
         </div>
-        <ChatSidebar setSelectedUser={setSelectedUser} />
+        <ChatSidebar setSelectedChat={setSelectedChat} />
       </div>
-      {selectedUser ? (
+      {selectedChat ? (
         <div className="flex flex-1 flex-col">
           {/* Chat header */}
 
@@ -108,12 +130,11 @@ export default function ChatInterface() {
               )}
               <Avatar className="h-8 w-8">
                 <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-                  AJ
+                  {getFirstLetter()}
                 </div>
               </Avatar>
               <div>
-                <h3 className="font-medium">Alex Johnson</h3>
-                <p className="text-xs text-muted-foreground">Online</p>
+                <h3 className="font-medium">{getUsername()}</h3>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -133,7 +154,7 @@ export default function ChatInterface() {
           <ScrollArea className="flex-1 p-4">
             <div className="flex flex-col gap-4">
               {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
+                <ChatMessage key={message._id} message={message} />
               ))}
               <div ref={messagesEndRef} />
             </div>

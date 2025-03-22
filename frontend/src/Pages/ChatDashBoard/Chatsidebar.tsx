@@ -17,11 +17,13 @@ import { axiosWithCookie } from "@/lib/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
-import { UserDetails } from "./Chatinterface";
+import { ChatDetails, UserDetails } from "./Chatinterface";
+
 interface ChatSideBarProps {
-  setSelectedUser: (user: UserDetails | null) => void;
+  setSelectedChat: (chat: ChatDetails | null) => void;
 }
-const ChatSidebar: React.FC<ChatSideBarProps> = ({ setSelectedUser }) => {
+
+const ChatSidebar: React.FC<ChatSideBarProps> = ({ setSelectedChat }) => {
   const [showProfile, setShowProfile] = useState(false);
   const { user, setUser }: AuthContextType = useAuth();
   const navigate = useNavigate();
@@ -56,7 +58,7 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({ setSelectedUser }) => {
             className="data-[state=active]:bg-primary text-white hover:cursor-pointer"
           >
             <User className="h-4 w-4 mr-2 text-white" />
-            Contacts
+            Messages
           </TabsTrigger>
           <TabsTrigger
             value="groups"
@@ -68,7 +70,7 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({ setSelectedUser }) => {
         </TabsList>
 
         <TabsContent value="contacts" className="flex-1 mt-0">
-          <UserList setSelectedUser={setSelectedUser} />
+          <UserList setSelectedChat={setSelectedChat} />
         </TabsContent>
 
         <TabsContent value="groups" className="flex-1 mt-0">

@@ -5,7 +5,7 @@ const chatSchema = new mongoose.Schema(
     chatName: { type: String }, //optional for groups
     isGroupChat: { type: Boolean, default: false },
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    lastestMessage: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
+    latestMessage: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, //only for groups
   },
   {
@@ -13,6 +13,6 @@ const chatSchema = new mongoose.Schema(
   }
 );
 
-const Chat = mongoose.model("chats", chatSchema);
+const Chat = mongoose.model("Chat", chatSchema);
 
 module.exports = { Chat };

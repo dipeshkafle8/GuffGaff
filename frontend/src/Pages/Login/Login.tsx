@@ -78,7 +78,7 @@ const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
     let emailInput = document.getElementById("email") as HTMLInputElement;
     let passwordInput = document.getElementById("password") as HTMLInputElement;
     if (emailInput && passwordInput) {
-      emailInput.value = "abc@gmail.com";
+      emailInput.value = "guest1@gmail.com";
       passwordInput.value = "1234";
     }
   };

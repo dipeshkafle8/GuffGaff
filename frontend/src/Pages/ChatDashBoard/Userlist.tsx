@@ -6,24 +6,37 @@ import { useEffect, useState } from "react";
 import { axiosWithCookie } from "@/lib/axios";
 import { toast } from "react-toastify";
 import { RingLoader } from "react-spinners";
-import { UserDetails } from "./Chatinterface";
+import { ChatDetails, UserDetails } from "./Chatinterface";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Description } from "@radix-ui/react-dialog";
+import { AuthContextType, useAuth } from "@/context/AuthContext";
 
 interface UserListProps {
-  setSelectedUser: (user: UserDetails | null) => void;
+  setSelectedChat: (chat: ChatDetails | null) => void;
 }
 
-export default function UserList({ setSelectedUser }: UserListProps) {
+export default function UserList({ setSelectedChat }: UserListProps) {
   //to store all the registered users
-  const [Users, setUsers] = useState<UserDetails[]>([]);
+  const [chats, setChats] = useState<ChatDetails[]>([]);
+  const { user, setUser }: AuthContextType = useAuth();
   const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const [users, setUsers] = useState<UserDetails[]>([]);
+  const [isUsersLoading, setIsUsersLoading] = useState<Boolean>(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const response = await axiosWithCookie.get("/message/users");
-        console.log(response.data.allUsers);
-        setUsers(response.data.allUsers);
+        const response = await axiosWithCookie.get("/chat/getSingleChats");
+        setChats(response.data.chats);
       } catch (err) {
         console.log("Error in getting Users", err);
       } finally {
@@ -34,8 +47,53 @@ export default function UserList({ setSelectedUser }: UserListProps) {
   }, []);
 
   //to handle clicking on a specific user
-  const handleOnClickOnUser = (user: UserDetails) => {
-    setSelectedUser(user);
+  const handleOnClickOnUser = (chat: ChatDetails) => {
+    setSelectedChat(chat);
+  };
+
+  //handle getting users for creating chat
+  const handleGetAllUsers = async () => {
+    setIsUsersLoading(true);
+    try {
+      const res = await axiosWithCookie.get("/user/getAllUsers");
+
+      setUsers(res.data.Users);
+    } catch (err) {
+      console.log("Error in getting users");
+    } finally {
+      setIsUsersLoading(false);
+    }
+  };
+
+  const handleCreateChat = async (user: UserDetails) => {
+    try {
+      const res = await axiosWithCookie.get("/chat/getAllChats", {
+        params: {
+          userId: user._id,
+        },
+      });
+      console.log(res);
+    } catch (err) {
+      console.log("Error in creating chat");
+    }
+  };
+
+  //to find the staring letter of the another user
+  const findStartingLetter = (chat: ChatDetails) => {
+    let secondUser = chat.users.filter((u) => u._id != user?.id);
+    if (secondUser.length > 0) {
+      return secondUser[0].username.split("")[0].toUpperCase();
+    }
+    return "no User";
+  };
+
+  //to find the username
+  const findUsername = (chat: ChatDetails) => {
+    let secondUser = chat.users.filter((u) => u._id != user?.id);
+    if (secondUser.length > 0) {
+      return secondUser[0].username;
+    }
+    return "User not found";
   };
 
   //if currenlty fetching user details
@@ -59,36 +117,58 @@ export default function UserList({ setSelectedUser }: UserListProps) {
 
       <ScrollArea className="flex-1">
         <div className="space-y-1 p-2">
-          {Users.map((user, ind) => (
+          {chats.map((chat, ind) => (
             <div
               key={ind}
               className="flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-gray-800/50 text-white"
-              onClick={() => handleOnClickOnUser(user)}
+              onClick={() => handleOnClickOnUser(chat)}
             >
               <Avatar className="h-10 w-10">
-                <div
-                  className={`flex h-full w-full items-center justify-center text-sm font-medium ${
-                    user.isOnline === true
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-gray-700 text-gray-200"
-                  }`}
-                >
-                  {user.username.split("")[0].toUpperCase()}
+                <div className="flex h-full w-full items-center justify-center text-sm font-medium ">
+                  {findStartingLetter(chat)}
                 </div>
               </Avatar>
 
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-medium">{user.username}</h4>
+                  <h4 className="font-medium">{findUsername(chat)}</h4>
                 </div>
-                <p className="text-xs text-gray-400">
-                  {user.isOnline === true ? "Online" : "Offline"}
-                </p>
               </div>
             </div>
           ))}
         </div>
       </ScrollArea>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            className="bg-[#4242f2] cursor-pointer hover:bg-[#4242f2bb] w-[50%] text-center ml-3"
+            onClick={handleGetAllUsers}
+          >
+            New message +
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Select Users</DialogTitle>
+          <Description></Description>
+          <div className="flex flex-col gap-y-2">
+            {isUsersLoading ? (
+              <span>Loading....</span>
+            ) : (
+              users.map((user) => {
+                return (
+                  <div
+                    key={user._id.toString()}
+                    className="user-item bg-[#ccc7c7] p-2 rounded-md cursor-pointer hover:bg-[#b0acac] hover:text-white"
+                    onClick={() => handleCreateChat(user)}
+                  >
+                    {user.username}
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -2,7 +2,8 @@ const { Chat } = require("../model/chat.model");
 
 const accessChat = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.query;
+
     let myId = req.user.id;
     if (!userId) {
       return res.status(400).json({ status: false, msg: "userId not present" });
