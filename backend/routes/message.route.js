@@ -8,7 +8,7 @@ const {
 
 const messageRoute = express.Router();
 messageRoute.get("/getMessages/:chatId", protectedRoute, getMessages);
-messageRoute.post("/send/message/:id", protectedRoute, sendMessage);
+messageRoute.post("/sendMessage", protectedRoute, sendMessage);
 
 module.exports = {
   messageRoute,

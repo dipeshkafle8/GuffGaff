@@ -12,6 +12,7 @@ import ChatMessage from "./Chatmessage";
 import ChatSidebar from "./Chatsidebar";
 import { axiosWithCookie } from "@/lib/axios";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
+import { toast } from "react-toastify";
 
 export interface UserDetails {
   _id: String;
@@ -21,18 +22,20 @@ export interface UserDetails {
   isOnline: Boolean;
 }
 
-interface Message {
+export interface Message {
   _id: number;
   content: string;
   sender: UserDetails;
-  timestamp: Date;
+  updatedAt: Date;
+  createdAt: Date;
 }
 export interface ChatDetails {
   _id: String;
   chatName: String;
   isGroupChat: Boolean;
   users: UserDetails[];
-  timestamp: Date;
+  updatedAt: Date;
+  createdAt: Date;
 }
 
 export default function ChatInterface() {
@@ -45,6 +48,7 @@ export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  console.log(messages);
   // Scroll to bottom of messages when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -85,9 +89,34 @@ export default function ChatInterface() {
     return "No User";
   };
 
+  // to get the first Letter
   const getFirstLetter = () => {
     let username = getUsername();
     return username.split("")[0];
+  };
+
+  //sending message and storing in the database
+  const sendMessageToUser = async (message: String) => {
+    try {
+      if (!selectedChat) {
+        console.log("No chat is selected");
+        return;
+      }
+      if (message.trim() == "") {
+        toast.error("Please provide some message", {
+          position: "top-center",
+          autoClose: 800,
+        });
+      }
+      const data = {
+        chatId: selectedChat._id,
+        content: message,
+      };
+      const res = await axiosWithCookie.post("/message/sendMessage", data);
+      setMessages([...messages, res.data.message]);
+    } catch (err) {
+      console.log("Error in sending message");
+    }
   };
 
   // Handle sending a new message
@@ -95,7 +124,7 @@ export default function ChatInterface() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const message: string = (formData.get("message") as string) ?? "";
-
+    sendMessageToUser(message);
     e.currentTarget.reset();
   };
 

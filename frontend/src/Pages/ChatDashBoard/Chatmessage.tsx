@@ -15,14 +15,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   return (
     <div className={cn("flex gap-2", isMe ? "flex-row-reverse" : "flex-row")}>
       {!isMe && (
-        <Avatar className="h-8 w-8 mt-1">
-          <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-            {message.sender.username
-              ?.split(" ")
-              .map((name) => name[0])
-              .join("") || "U"}
-          </div>
-        </Avatar>
+        <div>
+          <Avatar className="h-8 w-8 mt-1">
+            <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
+              {message.sender.username}
+            </div>
+          </Avatar>
+        </div>
       )}
 
       <div className="flex max-w-[75%] flex-col">
@@ -37,7 +36,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           <p className="whitespace-pre-wrap break-words">{message.content}</p>
         </div>
         <span className="mt-1 text-xs text-gray-400">
-          {format(message.timestamp, "h:mm a")}
+          {format(message.createdAt, "h:mm a")}
         </span>
       </div>
     </div>

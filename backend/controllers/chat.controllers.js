@@ -60,7 +60,7 @@ const fetchSingleChatsForUser = async (req, res) => {
 
     res.status(200).json({ status: true, chats });
   } catch (err) {
-    console.log("Error in fetching chats of particular users");
+    console.log("Error in fetching chats of particular users", err);
     res
       .status(500)
       .json({ status: false, msg: "Error in fetching chats of users" });

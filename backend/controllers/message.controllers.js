@@ -35,12 +35,13 @@ const sendMessage = async (req, res) => {
     // create the message and get users details of that particular chat
     let message = await Message.create(newMessage);
     message = await message.populate("chat");
+    message = await message.populate("sender");
     message = await User.populate(message, {
       path: "chat.users",
       select: "name pic email",
     });
 
-    await Chat.findByIdAndUpdate(chatId, { lastestMessage: message });
+    await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
     res
       .status(200)
       .json({ status: true, msg: "Message created", message: message });
