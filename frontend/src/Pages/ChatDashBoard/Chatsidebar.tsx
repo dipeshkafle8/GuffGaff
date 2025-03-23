@@ -20,10 +20,14 @@ import { AuthContextType, useAuth } from "@/context/AuthContext";
 import { ChatDetails, UserDetails } from "./Chatinterface";
 
 interface ChatSideBarProps {
+  selectedChat: ChatDetails | null;
   setSelectedChat: (chat: ChatDetails | null) => void;
 }
 
-const ChatSidebar: React.FC<ChatSideBarProps> = ({ setSelectedChat }) => {
+const ChatSidebar: React.FC<ChatSideBarProps> = ({
+  selectedChat,
+  setSelectedChat,
+}) => {
   const [showProfile, setShowProfile] = useState(false);
   const { user, setUser }: AuthContextType = useAuth();
   const navigate = useNavigate();
@@ -70,11 +74,14 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({ setSelectedChat }) => {
         </TabsList>
 
         <TabsContent value="contacts" className="flex-1 mt-0">
-          <UserList setSelectedChat={setSelectedChat} />
+          <UserList
+            selectedChat={selectedChat}
+            setSelectedChat={setSelectedChat}
+          />
         </TabsContent>
 
         <TabsContent value="groups" className="flex-1 mt-0">
-          <GroupList />
+          <GroupList setSelectedChat={setSelectedChat} />
         </TabsContent>
       </Tabs>
 

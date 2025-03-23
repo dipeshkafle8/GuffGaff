@@ -62,8 +62,8 @@ export default function ChatInterface() {
 
   useEffect(() => {
     socket?.on("message received", (newMessageReceived) => {
-      if (!selectedChat || selectedChat._id != newMessageReceived.chat._id) {
-        //logic for notification
+      if (!selectedChat || selectedChat._id !== newMessageReceived.chat._id) {
+        return;
       } else {
         setMessages([...messages, newMessageReceived]);
       }
@@ -169,7 +169,10 @@ export default function ChatInterface() {
             </Button>
           )}
         </div>
-        <ChatSidebar setSelectedChat={setSelectedChat} />
+        <ChatSidebar
+          selectedChat={selectedChat}
+          setSelectedChat={setSelectedChat}
+        />
       </div>
       {selectedChat ? (
         <div className="flex flex-1 flex-col">
@@ -184,7 +187,10 @@ export default function ChatInterface() {
               )}
               <Avatar className="h-8 w-8">
                 <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-                  {getFirstLetter()}
+                  {/* if group chat display chatName otherwise display name of other person */}
+                  {selectedChat.isGroupChat === true
+                    ? selectedChat.chatName
+                    : getFirstLetter()}
                 </div>
               </Avatar>
               <div>

@@ -98,18 +98,20 @@ const createGroup = async (req, res) => {
         .json({ status: false, msg: "Please fill all the fields" });
     }
     let users = JSON.parse(req.body.users);
-    if (users.length < 2) {
+    if (users.length == 0) {
       return res.status(400).json({
         status: false,
         msg: "At least two users are required to create group",
       });
     }
-    users.push(req.user);
+    users = users.map((user) => user._id);
+    users.push(req.user.id);
+
     const groupChat = await Chat.create({
       chatName: req.body.name,
       users: users,
       isGroupChat: true,
-      groupAdmin: req.user._id,
+      groupAdmin: req.user.id,
     });
 
     const createdGroupChat = await Chat.findOne({

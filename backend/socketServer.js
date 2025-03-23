@@ -50,7 +50,7 @@ const setupSocket = (server) => {
     socket.on("send message", (newReceivedMessage) => {
       let chat = newReceivedMessage.chat;
 
-      if (!chat.users) return console.log("No users are there");
+      if (!chat) return console.log("No users are there");
 
       chat.users.forEach((user) => {
         //do not send back to the user who send it
@@ -62,6 +62,12 @@ const setupSocket = (server) => {
 
     socket.on("disconnect", () => {
       console.log("User disconnected");
+    });
+
+    socket.off("setup", () => {
+      console.log("User disconnected");
+
+      socket.leave(user.id);
     });
   });
 

@@ -20,18 +20,34 @@ import { Description } from "@radix-ui/react-dialog";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
 
 interface UserListProps {
+  selectedChat: ChatDetails | null;
   setSelectedChat: (chat: ChatDetails | null) => void;
 }
 
-export default function UserList({ setSelectedChat }: UserListProps) {
+export default function UserList({
+  selectedChat,
+  setSelectedChat,
+}: UserListProps) {
   //to store all the registered users
   const [chats, setChats] = useState<ChatDetails[]>([]);
+
+  //logged user details
   const { user, setUser }: AuthContextType = useAuth();
+
+  //while gettings chats of the particular users
   const [isLoading, setIsLoading] = useState<Boolean>(false);
+
+  //during new message display the users with whom not previously communicated
   const [users, setUsers] = useState<UserDetails[]>([]);
   const [isUsersLoading, setIsUsersLoading] = useState<Boolean>(false);
+
+  //after creating new chat fetch the updated chats
   const [refreshChats, setRefreshChats] = useState<Boolean>(false);
+
+  //to make sure new message dialog closes after creating a chat
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  //for fething chats of logged users while loading
   useEffect(() => {
     const fetchUsers = async () => {
       setIsLoading(true);
@@ -137,7 +153,9 @@ export default function UserList({ setSelectedChat }: UserListProps) {
           {chats.map((chat, ind) => (
             <div
               key={ind}
-              className="flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-gray-800/50 text-white"
+              className={`flex hover:bg-emerald-600 cursor-pointer items-center gap-3 rounded-lg p-2  text-white ${
+                selectedChat?._id === chat._id ? "bg-emerald-600" : ""
+              }`}
               onClick={() => handleOnClickOnUser(chat)}
             >
               <Avatar className="h-10 w-10">
@@ -155,6 +173,8 @@ export default function UserList({ setSelectedChat }: UserListProps) {
           ))}
         </div>
       </ScrollArea>
+
+      {/* for new message */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button
