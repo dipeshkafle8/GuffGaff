@@ -18,14 +18,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandGroup,
-  CommandItem,
-  CommandEmpty,
-} from "@/components/ui/command";
 import { toast } from "react-toastify";
 
 interface GroupListProps {
@@ -204,31 +196,24 @@ export default function GroupList({
                 className="col-span-3"
               />
             </div>
-            <Command className="rounded-lg border shadow-md md:min-w-[40%]">
-              <CommandInput placeholder="Search users..." />
-              <CommandList>
-                <CommandEmpty>No results found.</CommandEmpty>
-                <CommandGroup heading="Users">
-                  {users.map((user) => (
-                    <CommandItem
-                      key={user._id as string}
-                      className="cursor-pointer"
-                      onSelect={() => handleSelectUser(user)}
-                    >
-                      <Avatar className="h-6 w-6 mr-2">
-                        <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-                          {user.username[0].toUpperCase()}
-                        </div>
-                      </Avatar>
-                      <span>{user.username}</span>
-                      {selectedUsers.find((u) => u._id === user._id) && (
-                        <span className="ml-auto text-primary">Selected</span>
-                      )}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
+
+            {users.map((user) => (
+              <div
+                key={user._id as string}
+                className="cursor-pointer"
+                onSelect={() => handleSelectUser(user)}
+              >
+                <Avatar className="h-6 w-6 mr-2">
+                  <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
+                    {user.username[0].toUpperCase()}
+                  </div>
+                </Avatar>
+                <span>{user.username}</span>
+                {selectedUsers.find((u) => u._id === user._id) && (
+                  <span className="ml-auto text-primary">Selected</span>
+                )}
+              </div>
+            ))}
 
             <div className="flex flex-col">
               <div>
