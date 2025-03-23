@@ -13,7 +13,7 @@ import ChatSidebar from "./Chatsidebar";
 import { axiosWithCookie } from "@/lib/axios";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
-import { getSocket } from "@/socket/socketClient";
+import { getSocket } from "@/socket/socketClient.ts";
 
 import {
   Dialog,

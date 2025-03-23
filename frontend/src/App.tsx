@@ -1,11 +1,11 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import LandingPage from "./Pages/LandingPage/LandingPage";
-import BeforeLogin from "./layout/BeforeLogin";
-import AfterLogin from "./layout/AfterLogin";
-import ChatDashBoard from "./Pages/ChatDashBoard/Chatdashboard";
-import AuthRedirect from "./authRedirect/AuthRedirect";
+import LandingPage from "./Pages/LandingPage/LandingPage.tsx";
+import BeforeLogin from "./layout/BeforeLogin.tsx";
+import AfterLogin from "./layout/AfterLogin.tsx";
+import ChatDashBoard from "./Pages/ChatDashBoard/Chatdashboard.tsx";
+import AuthRedirect from "./authRedirect/AuthRedirect.tsx";
 function App() {
   return (
     <>
