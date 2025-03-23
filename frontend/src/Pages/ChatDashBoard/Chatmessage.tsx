@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
-import { Message } from "./Chatinterface";
+import { Message } from "./ChatInterface";
 
 interface ChatMessageProps {
   message: Message;

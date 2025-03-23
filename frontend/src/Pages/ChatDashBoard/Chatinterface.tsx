@@ -8,8 +8,8 @@ import { Avatar } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import ChatMessage from "./Chatmessage";
-import ChatSidebar from "./Chatsidebar";
+import ChatMessage from "./ChatMessage";
+import ChatSidebar from "./ChatSidebar";
 import { axiosWithCookie } from "@/lib/axios";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";

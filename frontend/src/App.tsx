@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 import LandingPage from "./Pages/LandingPage/LandingPage.tsx";
 import BeforeLogin from "./layout/BeforeLogin.tsx";
 import AfterLogin from "./layout/AfterLogin.tsx";
-import ChatDashBoard from "./Pages/ChatDashBoard/Chatdashboard.tsx";
+import ChatDashBoard from "./Pages/ChatDashBoard/ChatDashboard.tsx";
 import AuthRedirect from "./authRedirect/AuthRedirect.tsx";
 function App() {
   return (

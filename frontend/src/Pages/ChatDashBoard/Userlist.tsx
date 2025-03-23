@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { axiosWithCookie } from "@/lib/axios";
 import { toast } from "react-toastify";
 import { RingLoader } from "react-spinners";
-import { ChatDetails, UserDetails } from "./Chatinterface";
+import { ChatDetails, UserDetails } from "./ChatInterface";
 import {
   Dialog,
   DialogContent,

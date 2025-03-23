@@ -3,7 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Search, Users } from "lucide-react";
 
-import { ChatDetails, UserDetails } from "./Chatinterface";
+import { ChatDetails, UserDetails } from "./ChatInterface";
 import { useEffect, useState } from "react";
 import { axiosWithCookie } from "@/lib/axios";
 import { Button } from "@/components/ui/button";

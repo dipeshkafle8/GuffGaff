@@ -3,13 +3,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { LogOut, User, Users, ChevronDown, ChevronUp } from "lucide-react";
-import UserList from "./Userlist";
-import GroupList from "./Grouplist";
+import UserList from "./UserList";
+import GroupList from "./GroupList";
 import { axiosWithCookie } from "@/lib/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
-import { ChatDetails } from "./Chatinterface";
+import { ChatDetails } from "./ChatInterface";
 
 interface ChatSideBarProps {
   selectedChat: ChatDetails | null;

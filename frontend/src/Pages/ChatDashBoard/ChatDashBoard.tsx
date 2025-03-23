@@ -1,4 +1,4 @@
-import ChatInterface from "./Chatinterface";
+import ChatInterface from "./ChatInterface";
 
 const ChatDashBoard = () => {
   return (
