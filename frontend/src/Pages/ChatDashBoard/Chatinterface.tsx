@@ -2,7 +2,7 @@ import type React from "react";
 
 import { useState, useRef, useEffect } from "react";
 import { useMediaQuery } from "@/hooks/Usemediaquery";
-import { Send, Menu, X, Phone, Video, MoreVertical } from "lucide-react";
+import { Send, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -138,6 +138,12 @@ export default function ChatInterface() {
     }
   };
 
+  //to handle on clicking the close chat button
+
+  const handleOnCloseChat = () => {
+    setSelectedChat(null);
+  };
+
   // Handle sending a new message
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -186,14 +192,13 @@ export default function ChatInterface() {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon">
-                <Phone className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon">
-                <Video className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="h-5 w-5" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="cursor-pointer"
+                onClick={handleOnCloseChat}
+              >
+                <X className="h-5 w-5" />
               </Button>
             </div>
           </div>

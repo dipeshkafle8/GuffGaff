@@ -30,7 +30,8 @@ export default function UserList({ setSelectedChat }: UserListProps) {
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [users, setUsers] = useState<UserDetails[]>([]);
   const [isUsersLoading, setIsUsersLoading] = useState<Boolean>(false);
-
+  const [refreshChats, setRefreshChats] = useState<Boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   useEffect(() => {
     const fetchUsers = async () => {
       setIsLoading(true);
@@ -44,7 +45,7 @@ export default function UserList({ setSelectedChat }: UserListProps) {
       }
     };
     fetchUsers();
-  }, []);
+  }, [refreshChats]);
 
   //to handle clicking on a specific user
   const handleOnClickOnUser = (chat: ChatDetails) => {
@@ -57,7 +58,18 @@ export default function UserList({ setSelectedChat }: UserListProps) {
     try {
       const res = await axiosWithCookie.get("/user/getAllUsers");
 
-      setUsers(res.data.Users);
+      //to display only those users with whom there is no chat
+      const existingUserIds = new Set(
+        chats.flatMap(
+          (chat: ChatDetails) => chat.users.map((u: UserDetails) => u._id) // Ensure the result of map is returned
+        )
+      );
+
+      const filteredUsers = res.data.Users.filter((u: UserDetails) => {
+        return !existingUserIds.has(u._id);
+      });
+
+      setUsers(filteredUsers);
     } catch (err) {
       console.log("Error in getting users");
     } finally {
@@ -72,7 +84,12 @@ export default function UserList({ setSelectedChat }: UserListProps) {
           userId: user._id,
         },
       });
-      console.log(res);
+      toast.success("Now You can chat with the person", {
+        position: "bottom-right",
+        autoClose: 800,
+      });
+      setRefreshChats(!refreshChats);
+      setIsDialogOpen(false);
     } catch (err) {
       console.log("Error in creating chat");
     }
@@ -138,7 +155,7 @@ export default function UserList({ setSelectedChat }: UserListProps) {
           ))}
         </div>
       </ScrollArea>
-      <Dialog>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button
             className="bg-[#4242f2] cursor-pointer hover:bg-[#4242f2bb] w-[50%] text-center ml-3"
@@ -153,7 +170,7 @@ export default function UserList({ setSelectedChat }: UserListProps) {
           <div className="flex flex-col gap-y-2">
             {isUsersLoading ? (
               <span>Loading....</span>
-            ) : (
+            ) : users.length > 0 ? (
               users.map((user) => {
                 return (
                   <div
@@ -165,6 +182,8 @@ export default function UserList({ setSelectedChat }: UserListProps) {
                   </div>
                 );
               })
+            ) : (
+              <span>No Users found</span>
             )}
           </div>
         </DialogContent>
