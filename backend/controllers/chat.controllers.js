@@ -16,7 +16,7 @@ const accessChat = async (req, res) => {
       .populate("users", "-password")
       .populate({
         path: "latestMessage",
-        populate: { path: "sender", select: "name pic email" },
+        populate: { path: "sender", select: "username pic email" },
       });
 
     //if chat exists
@@ -36,7 +36,7 @@ const accessChat = async (req, res) => {
       .populate("users", "-password")
       .populate({
         path: "latestMessage",
-        populate: { path: "sender", select: "name pic email" },
+        populate: { path: "sender", select: "username pic email" },
       });
 
     return res.status(200).json({ status: true, chat: updatedChat });
@@ -54,7 +54,7 @@ const fetchSingleChatsForUser = async (req, res) => {
       .populate("users", "-password")
       .populate({
         path: "latestMessage",
-        populate: { path: "sender", select: "name pic email" },
+        populate: { path: "sender", select: "username pic email" },
       })
       .sort({ updatedAt: -1 }); //sort by latest updated chat
 
@@ -77,7 +77,7 @@ const fetchGroupChatsForUser = async (req, res) => {
       .populate("groupAdmin", "-password")
       .populate({
         path: "latestMessage",
-        populate: { path: "sender", select: "name email pic" },
+        populate: { path: "sender", select: "username email pic" },
       })
       .sort({ updatedAt: -1 });
 

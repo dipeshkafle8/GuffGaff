@@ -19,7 +19,7 @@ export interface UserDetails {
   _id: String;
   username: String;
   email: String;
-  profilePic: String;
+  pic: String;
   isOnline: Boolean;
 }
 
@@ -35,6 +35,7 @@ export interface ChatDetails {
   chatName: String;
   isGroupChat: Boolean;
   users: UserDetails[];
+
   updatedAt: Date;
   createdAt: Date;
 }
