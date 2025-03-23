@@ -2,9 +2,9 @@ import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Search, Users } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+
 import { ChatDetails, UserDetails } from "./Chatinterface";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { axiosWithCookie } from "@/lib/axios";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-
 import { toast } from "react-toastify";
 
 interface GroupListProps {
@@ -32,11 +31,11 @@ export default function GroupList({
   //to fetch groupChats from backend
   const [groupChats, setGroupChats] = useState<ChatDetails[]>([]);
   const [isChatsLoading, setIsChatsLoading] = useState<Boolean>(false);
-
+  console.log(isChatsLoading);
   //to select the users for creating groups
   const [users, setUsers] = useState<UserDetails[]>([]);
   const [isUsersLoading, setIsUsersLoading] = useState<Boolean>(false);
-
+  console.log(isUsersLoading);
   //to select users to make group
   const [selectedUsers, setSelectedUsers] = useState<UserDetails[]>([]);
   const [chatName, setChatName] = useState("");

@@ -2,22 +2,14 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
-import {
-  LogOut,
-  Settings,
-  User,
-  Users,
-  ChevronDown,
-  ChevronUp,
-  Bell,
-} from "lucide-react";
+import { LogOut, User, Users, ChevronDown, ChevronUp } from "lucide-react";
 import UserList from "./Userlist";
 import GroupList from "./Grouplist";
 import { axiosWithCookie } from "@/lib/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AuthContextType, useAuth } from "@/context/AuthContext";
-import { ChatDetails, UserDetails } from "./Chatinterface";
+import { ChatDetails } from "./Chatinterface";
 
 interface ChatSideBarProps {
   selectedChat: ChatDetails | null;

@@ -10,8 +10,6 @@ import { ChatDetails, UserDetails } from "./Chatinterface";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -32,7 +30,7 @@ export default function UserList({
   const [chats, setChats] = useState<ChatDetails[]>([]);
 
   //logged user details
-  const { user, setUser }: AuthContextType = useAuth();
+  const { user }: AuthContextType = useAuth();
 
   //while gettings chats of the particular users
   const [isLoading, setIsLoading] = useState<Boolean>(false);
@@ -100,6 +98,7 @@ export default function UserList({
           userId: user._id,
         },
       });
+      console.log(res.data.status);
       toast.success("Now You can chat with the person", {
         position: "bottom-right",
         autoClose: 800,

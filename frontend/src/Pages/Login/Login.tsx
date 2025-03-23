@@ -27,7 +27,7 @@ interface LoginDetails {
 }
 
 const Login: React.FC<LoginProps> = ({ isLoginOpen, handleLoginChange }) => {
-  const { user, setUser }: AuthContextType = useAuth();
+  const { setUser }: AuthContextType = useAuth();
 
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const navigate = useNavigate();

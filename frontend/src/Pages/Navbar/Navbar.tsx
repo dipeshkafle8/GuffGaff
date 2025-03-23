@@ -17,6 +17,7 @@ const NavBar = () => {
   const handleLogOut = async () => {
     try {
       let response = await axiosWithCookie.post("/user/logout");
+      console.log(response.data.msg);
       setUser(null);
       toast.success("Sucessfully logged out", {
         position: "top-center",

@@ -3,7 +3,7 @@ import { AuthContextType } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 const AuthRedirect: React.FC = () => {
-  const { user, setUser }: AuthContextType = useAuth();
+  const { user }: AuthContextType = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

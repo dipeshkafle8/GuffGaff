@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const AfterLogin = () => {
-  const { user, setUser }: AuthContextType = useAuth();
+  const { user }: AuthContextType = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

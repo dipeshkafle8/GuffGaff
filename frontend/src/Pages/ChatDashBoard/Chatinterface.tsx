@@ -50,9 +50,9 @@ export interface ChatDetails {
 }
 
 export default function ChatInterface() {
-  const { user, setUser }: AuthContextType = useAuth();
+  const { user }: AuthContextType = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
+
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedChat, setSelectedChat] = useState<ChatDetails | null>(null);
   const [isMessagesLoading, setIsMessagesLoading] = useState<Boolean>(false);
@@ -79,7 +79,7 @@ export default function ChatInterface() {
       }
     });
   });
-
+  console.log(isMessagesLoading);
   // whenever user clicks on the user on sidebar fetch messages between me an him
   useEffect(() => {
     const fetchMessages = async () => {
