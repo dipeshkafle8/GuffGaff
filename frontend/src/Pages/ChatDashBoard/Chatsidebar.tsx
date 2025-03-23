@@ -81,7 +81,10 @@ const ChatSidebar: React.FC<ChatSideBarProps> = ({
         </TabsContent>
 
         <TabsContent value="groups" className="flex-1 mt-0">
-          <GroupList setSelectedChat={setSelectedChat} />
+          <GroupList
+            selectedChat={selectedChat}
+            setSelectedChat={setSelectedChat}
+          />
         </TabsContent>
       </Tabs>
 

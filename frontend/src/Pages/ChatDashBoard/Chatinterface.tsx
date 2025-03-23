@@ -15,6 +15,15 @@ import { AuthContextType, useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
 import { getSocket } from "@/socket/socketClient";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 export interface UserDetails {
   _id: String;
   username: String;
@@ -99,6 +108,9 @@ export default function ChatInterface() {
   };
 
   const getUsername = () => {
+    if (selectedChat?.isGroupChat) {
+      return selectedChat.chatName;
+    }
     let secondUser = selectedChat?.users.filter((u) => u._id != user?.id);
 
     if (secondUser) {
@@ -188,10 +200,7 @@ export default function ChatInterface() {
               )}
               <Avatar className="h-8 w-8">
                 <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-                  {/* if group chat display chatName otherwise display name of other person */}
-                  {selectedChat.isGroupChat === true
-                    ? selectedChat.chatName
-                    : getFirstLetter()}
+                  {getFirstLetter()}
                 </div>
               </Avatar>
               <div>
@@ -199,6 +208,30 @@ export default function ChatInterface() {
               </div>
             </div>
             <div className="flex items-center gap-1">
+              {selectedChat.isGroupChat ? (
+                <Dialog>
+                  <DialogTrigger
+                    className="text-sm   px-2 md:px-4 md:text-base
+                   bg-[#dcf359] rounded-sm text-black cursor-pointer hover:bg-[#dcf359c7]"
+                  >
+                    Members
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Group Members</DialogTitle>
+                      <DialogDescription></DialogDescription>
+                      <ul className="list-disc ml-8">
+                        {selectedChat.users.map((user: UserDetails) => {
+                          return (
+                            <li key={user._id as string}>{user.username}</li>
+                          );
+                        })}
+                      </ul>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              ) : null}
+
               <Button
                 variant="ghost"
                 size="icon"
