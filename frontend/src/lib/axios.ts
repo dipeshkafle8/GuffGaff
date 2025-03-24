@@ -6,5 +6,5 @@ export const axiosWithCookie = axios.create({
 });
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8001/api",
+  baseURL: "https://guffgaff-pwda.onrender.com/api",
 });
