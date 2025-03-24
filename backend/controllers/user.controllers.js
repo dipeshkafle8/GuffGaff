@@ -93,10 +93,30 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+//to get the users on the basis of query
+const getFilteredUsers = async (req, res) => {
+  try {
+    const { query } = req.body;
+    const users = await User.find({
+      username: { $regex: `^${query}`, $options: "i" },
+    });
+
+    res
+      .status(200)
+      .json({ status: true, msg: "Filtered Users fetched", users });
+  } catch (err) {
+    console.log("Error in getting filtered data", err);
+    res
+      .status(500)
+      .json({ status: false, msg: "Error in getting filtered users" });
+  }
+};
+
 module.exports = {
   checkAuthentication,
   handleUserLogin,
   handleUserRegister,
   handleUserLogout,
+  getFilteredUsers,
   getAllUsers,
 };

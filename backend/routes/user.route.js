@@ -6,6 +6,7 @@ const {
   handleUserLogout,
   checkAuthentication,
   getAllUsers,
+  getFilteredUsers,
 } = require("../controllers/user.controllers");
 
 const userRouter = express.Router();
@@ -18,5 +19,6 @@ userRouter.post("/update", protectedRoute, (req, res) => {
 });
 userRouter.get("/check", protectedRoute, checkAuthentication);
 userRouter.get("/getAllUsers", protectedRoute, getAllUsers);
+userRouter.post("/getFilteredUsers", protectedRoute, getFilteredUsers);
 
 module.exports = { userRouter };
