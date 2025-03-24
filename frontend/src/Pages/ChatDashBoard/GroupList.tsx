@@ -60,7 +60,7 @@ export default function GroupList({
       } catch (err) {
         console.log("Error while fetching group chats", err);
       } finally {
-        //  setIsChatsLoading(false);
+        setIsChatsLoading(false);
       }
     };
     fetchChats();
@@ -170,38 +170,44 @@ export default function GroupList({
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="space-y-1 p-2">
-          {groupChats.map((group) => {
-            return (
-              <div
-                key={group._id as string}
-                className={`flex cursor-pointer hover:bg-emerald-600 items-center gap-3 rounded-lg p-2  text-white ${
-                  selectedChat?._id === group._id ? "bg-emerald-600" : ""
-                }`}
-                onClick={() => handleOnChatSelect(group)}
-              >
-                <Avatar className="h-10 w-10">
-                  <div className="bg-violet-700 text-white flex h-full w-full items-center justify-center text-sm font-medium">
-                    <Users className="h-5 w-5" />
-                  </div>
-                </Avatar>
-
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <h4 className="font-medium text-white">
-                        {group.chatName}
-                      </h4>
+        {isChatsLoading ? (
+          <div className="p-4 flex justify-center items-center">
+            <ClipLoader color="white" />
+          </div>
+        ) : (
+          <div className="space-y-1 p-2">
+            {groupChats.map((group) => {
+              return (
+                <div
+                  key={group._id as string}
+                  className={`flex cursor-pointer hover:bg-emerald-600 items-center gap-3 rounded-lg p-2  text-white ${
+                    selectedChat?._id === group._id ? "bg-emerald-600" : ""
+                  }`}
+                  onClick={() => handleOnChatSelect(group)}
+                >
+                  <Avatar className="h-10 w-10">
+                    <div className="bg-violet-700 text-white flex h-full w-full items-center justify-center text-sm font-medium">
+                      <Users className="h-5 w-5" />
                     </div>
-                  </div>
-                  {/* <p className="text-xs text-gray-400 truncate max-w-[180px]">
+                  </Avatar>
+
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <h4 className="font-medium text-white">
+                          {group.chatName}
+                        </h4>
+                      </div>
+                    </div>
+                    {/* <p className="text-xs text-gray-400 truncate max-w-[180px]">
                   {group.latestMessage?}
                 </p> */}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </ScrollArea>
       {/* create group logic */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
