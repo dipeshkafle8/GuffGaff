@@ -99,6 +99,7 @@ const getFilteredUsers = async (req, res) => {
     const { query } = req.body;
     const users = await User.find({
       username: { $regex: `^${query}`, $options: "i" },
+      _id: { $ne: req.user.id },
     });
 
     res

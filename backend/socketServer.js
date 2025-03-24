@@ -6,7 +6,7 @@ const cookie = require("cookie");
 const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173", "https://guff-gaff-chat.vercel.app/"],
+      origin: ["http://localhost:5173", "https://guff-gaff-chat.vercel.app"],
       methods: ["GET", "POST"],
       credentials: true,
     },

@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
+import { X } from "lucide-react";
+import { ClipLoader } from "react-spinners";
 
 interface GroupListProps {
   selectedChat: ChatDetails | null;
@@ -31,17 +33,23 @@ export default function GroupList({
   //to fetch groupChats from backend
   const [groupChats, setGroupChats] = useState<ChatDetails[]>([]);
   const [isChatsLoading, setIsChatsLoading] = useState<Boolean>(false);
-  console.log(isChatsLoading);
+
   //to select the users for creating groups
   const [users, setUsers] = useState<UserDetails[]>([]);
   const [isUsersLoading, setIsUsersLoading] = useState<Boolean>(false);
-  console.log(isUsersLoading);
+
   //to select users to make group
   const [selectedUsers, setSelectedUsers] = useState<UserDetails[]>([]);
   const [chatName, setChatName] = useState("");
 
   //to close and open dialog
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  //for quering user names
+  const [query, setQuery] = useState<String>("");
+
+  //to see drop down only when clicks on input
+  const [isUserListVisible, setIsUserListVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -52,35 +60,45 @@ export default function GroupList({
       } catch (err) {
         console.log("Error while fetching group chats", err);
       } finally {
-        setIsChatsLoading(false);
+        //  setIsChatsLoading(false);
       }
     };
     fetchChats();
   }, []);
 
-  //to get all users
-  const handleGetAllUsers = async () => {
-    setIsUsersLoading(true);
-    try {
-      const res = await axiosWithCookie.get("/user/getAllUsers");
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsUsersLoading(true);
+      try {
+        let res = await axiosWithCookie.post("/user/getFilteredUsers", {
+          query: query,
+        });
+        setUsers(res.data.users);
+      } catch (err) {
+        console.log("Error in getting users");
+      } finally {
+        setIsUsersLoading(false);
+      }
+    };
+    const debounceTimer = setTimeout(() => {
+      fetchUsers();
+    }, 800);
 
-      setUsers(res.data.Users);
-    } catch (err) {
-      console.log("Error in getting users");
-    } finally {
-      setIsUsersLoading(false);
-    }
-  };
+    // Cleanup the timer on dependency change or unmount
+    //run each time before executing the useEffectcode
+    return () => clearTimeout(debounceTimer);
+  }, [query]);
 
   //to handle selectedusers
   const handleSelectUser = async (user: UserDetails) => {
     setSelectedUsers((prev) => {
       if (prev?.find((u) => u._id === user._id)) {
-        return prev.filter((u) => u._id !== user._id);
+        return prev;
       } else {
         return [...prev, user];
       }
     });
+    setIsUserListVisible(false);
   };
 
   //handle on input change
@@ -110,7 +128,9 @@ export default function GroupList({
         autoClose: 800,
         position: "top-center",
       });
-
+      setSelectedUsers([]);
+      setChatName("");
+      setQuery("");
       setIsDialogOpen(false);
     } catch (err) {
       toast.error("Error in creating group");
@@ -121,6 +141,22 @@ export default function GroupList({
   //for handling on clicking chat
   const handleOnChatSelect = (chat: ChatDetails) => {
     setSelectedChat(chat);
+  };
+
+  // for setting up the query users
+  const handleOnQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.trim() == "") {
+      setUsers([]);
+    }
+    setQuery(e.target.value);
+  };
+
+  //for handling remove user
+  const handleRemoveUser = (id: String) => {
+    const newSelectedUsers = selectedUsers.filter((user: UserDetails) => {
+      return id != user._id;
+    });
+    setSelectedUsers(newSelectedUsers);
   };
 
   return (
@@ -172,7 +208,7 @@ export default function GroupList({
         <DialogTrigger asChild>
           <Button
             className="bg-[#4242f2] cursor-pointer hover:bg-[#4242f2bb] w-[50%] text-center ml-3"
-            onClick={handleGetAllUsers}
+            // onClick={handleGetAllUsers}
           >
             + Create group
           </Button>
@@ -193,46 +229,89 @@ export default function GroupList({
                 value={chatName}
                 onChange={handleChatNameChange}
                 className="col-span-3"
+                placeholder="Enter group name"
               />
             </div>
-
-            {users.map((user) => (
-              <div
-                key={user._id as string}
-                className="cursor-pointer"
-                onSelect={() => handleSelectUser(user)}
-              >
-                <Avatar className="h-6 w-6 mr-2">
-                  <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
-                    {user.username[0].toUpperCase()}
-                  </div>
-                </Avatar>
-                <span>{user.username}</span>
-                {selectedUsers.find((u) => u._id === user._id) && (
-                  <span className="ml-auto text-primary">Selected</span>
-                )}
-              </div>
-            ))}
-
+            <div className="relative grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="search-user" className="text-right">
+                Select User:
+              </Label>
+              <Input
+                type="text"
+                id="search_user"
+                value={query as string}
+                onChange={handleOnQueryChange}
+                onFocus={() => setIsUserListVisible(true)}
+                onBlur={(e) => {
+                  // Check if the focus is still inside the dropdown or input
+                  if (
+                    !e.relatedTarget ||
+                    !e.relatedTarget.closest(".user-dropdown")
+                  ) {
+                    setIsUserListVisible(false);
+                  }
+                }}
+                placeholder="Enter user name..."
+                className="col-span-3"
+              />
+              {isUserListVisible && !isUsersLoading ? (
+                <div
+                  className="absolute bg-[#e7e3e3] top-10 border-2 w-40 flex flex-col left-32 rounded-md user-dropdown"
+                  tabIndex={-1} // To ensure the dropdown can receive focus
+                >
+                  {users.map((user) => (
+                    <div
+                      key={user._id as string}
+                      className="flex cursor-pointer hover:bg-[#c9c6c6] py-3 px-2"
+                      onClick={() => handleSelectUser(user)} // Changed to onClick
+                      tabIndex={0} // To make it keyboard navigable
+                    >
+                      <Avatar className="h-6 w-6 mr-2">
+                        <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-sm font-medium">
+                          {user.username[0].toUpperCase()}
+                        </div>
+                      </Avatar>
+                      <span>{user.username}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : isUserListVisible ? (
+                <div
+                  className="absolute bg-[#e7e3e3] top-10 border-2 w-40 flex  left-32 rounded-md user-dropdown justify-center"
+                  tabIndex={-1} // To ensure the dropdown can receive focus
+                >
+                  <ClipLoader size={25} className="inline-block" />
+                </div>
+              ) : null}
+            </div>
             <div className="flex flex-col">
               <div>
                 <span className="text-lg">Selected Users:</span>
               </div>
-              <div className="flex justify-evenly flex-wrap  w-[40%]">
+              <div className="flex justify-evenly flex-wrap w-[40%]">
                 {selectedUsers.map((user: UserDetails) => {
                   return (
-                    <span
+                    <div
                       key={user._id as string}
-                      className="bg-[#f530d8] text-md py-0.5 px-2 rounded-sm text-white cursor-pointer"
+                      className="bg-[#f530d8] text-md py-0.5 px-2 rounded-sm text-white flex items-center cursor-pointer"
                     >
-                      {user.username}
-                    </span>
+                      <span className="mr-2">{user.username}</span>
+                      {/* Cross Button */}
+                      <button
+                        className="text-white hover:text-gray-200 ml-1 cursor-pointer"
+                        onClick={() => handleRemoveUser(user._id)} // Function to remove the user
+                      >
+                        <X size={16} className="text-white" />
+                      </button>
+                    </div>
                   );
                 })}
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleOnCreateGroup}>Create Group</Button>
+              <Button onClick={handleOnCreateGroup} className="cursor-pointer">
+                Create Group
+              </Button>
             </DialogFooter>
           </div>
         </DialogContent>

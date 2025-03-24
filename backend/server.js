@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookie());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://guff-gaff-chat.vercel.app/"],
     credentials: true,
   })
 );
