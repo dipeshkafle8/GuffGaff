@@ -3,7 +3,7 @@ let socket: Socket | null = null;
 
 export const connectSocket = () => {
   if (!socket) {
-    socket = io("http://localhost:8001", {
+    socket = io("https://guffgaff-pwda.onrender.com", {
       withCredentials: true,
       transports: ["websocket"],
     });
